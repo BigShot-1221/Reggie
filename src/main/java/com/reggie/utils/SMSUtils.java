@@ -22,8 +22,8 @@ public class SMSUtils {
 	public static void sendMessage(String signName, String templateCode,String phoneNumbers,String param){
 
 		Config config = new Config();
-		config.setAccessKeyId("LTAI5tQjiMi7yU3BoZhjkkna");
-		config.setAccessKeySecret("hleXrx4Cs06JXtRQdLYACYbUWBfiFg");
+		config.setAccessKeyId("阿里云输入您的key");
+		config.setAccessKeySecret("阿里云设置输入您的secret");
 
 		try {
 			Client client = new Client(config);
