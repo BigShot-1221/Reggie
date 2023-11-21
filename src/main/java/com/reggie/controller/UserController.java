@@ -52,13 +52,13 @@ public class UserController {
         log.info("验证码:{}", code);
 
         //调用阿里云短信api
-        SMSUtils.sendMessage("阿里云短信测试", "SMS_154950909", phone, code);
+//        SMSUtils.sendMessage("阿里云短信测试", "SMS_154950909", phone, code);
 
         //需要将生成的验证码保存起来
         ValueOperations<String, String> forValue = redisTemplate.opsForValue();
         forValue.set(phone, code);
 
-        return R.success("短信发送成功");
+        return R.success("短信发送成功" + code);
     }
 
     /**
