@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -43,9 +45,9 @@ public class UserController {
         //获取手机号
         String phone = user.getPhone();
 
-        if (StringUtil.isNullOrEmpty(phone)){
-            return R.success("短信发送失败");
-        }
+//        if (StringUtil.isNullOrEmpty(phone)){
+//            return R.success("短信发送失败");
+//        }
 
         //生成随机4位验证码
         String code = ValidateCodeUtils.generateValidateCode(4).toString();
@@ -56,7 +58,8 @@ public class UserController {
 
         //需要将生成的验证码保存起来
         ValueOperations<String, String> forValue = redisTemplate.opsForValue();
-        forValue.set(phone, code);
+        //设置5分钟时间销毁
+        forValue.set(phone, code, 5, TimeUnit.MINUTES);
 
         return R.success("短信发送成功" + code);
     }
@@ -89,6 +92,8 @@ public class UserController {
                 userService.save(user);
             }
             request.getSession().setAttribute("user", user.getId());
+            //登录成功后将验证码缓存删除
+            redisTemplate.delete(phone);
             return R.success(user);
         }
         return R.error("登录失败");

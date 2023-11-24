@@ -1,20 +1,18 @@
-####这个文件是告诉git哪些文件不需要上传到仓库中
 .git
 logs
 rebel.xml
 target/
-!.mvn/warpper/maven-warpper.jar
+!.mvn/wrapper/maven-wrapper.jar
 log.path_IS_UNDEFINED
 .DS_Store
 offline_user.md
-*.class
 
 ### STS ###
 .apt_generated
 .classpath
 .factorypath
 .project
-.settins
+.settings
 .springBeans
 
 ### IntelliJ IDEA ###
@@ -33,3 +31,8 @@ nbdist/
 generatorConfig.xml
 
 ### nacos ###
+third-party/nacos/derby.log
+third-party/nacos/data/
+third-party/nacos/work/
+
+file/

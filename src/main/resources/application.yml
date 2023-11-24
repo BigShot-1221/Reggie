@@ -12,7 +12,7 @@ spring:
       password: 12345
     #redis的配置信息
   redis:
-    host: 127.0.0.1
+    host: 8.130.125.153
     port: 6379
     #最多获取数
     lettuce:
@@ -21,6 +21,8 @@ spring:
         max-wait:  8
         max-idle: 8
         min-idle: 0
+    database: 0
+    password: 12345
 mybatis-plus:
   configuration:
     #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
