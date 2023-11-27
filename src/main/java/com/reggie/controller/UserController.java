@@ -9,6 +9,7 @@ import com.reggie.utils.ValidateCodeUtils;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ValueOperations;
@@ -32,6 +33,7 @@ public class UserController {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
 
 
     /**

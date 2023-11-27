@@ -52,6 +52,7 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, SetMeal> impl
      * @param ids
      */
     @Override
+    @Transactional
     public void removeWithDish(List<Long> ids) {
         //查询套餐状态，确定是否可以删除     select count(*) from setMeal where id in ? and status = 1
         LambdaQueryWrapper<SetMeal> queryWrapper = new LambdaQueryWrapper<>();

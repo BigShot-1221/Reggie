@@ -15,6 +15,9 @@ import com.reggie.service.SetMealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +39,15 @@ public class SetMealController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private CacheManager cacheManager;
+
     /**
      * 新增套餐
      * @param setMealDto
      * @return
      */
+    @CacheEvict(value = "setMealCache",  allEntries = true) //将setMealCache下的所有缓存都删除
     @PostMapping
     public R<String> save(@RequestBody SetMealDto setMealDto) {
         log.info("新增套餐");
@@ -101,6 +108,7 @@ public class SetMealController {
      * @param ids
      * @return
      */
+    @CacheEvict(value = "setMealCache",  allEntries = true) //将setMealCache下的所有缓存都删除
     @DeleteMapping
     public R<String> delete(@RequestParam List<Long> ids) {
         log.info("批量删除套餐...");
@@ -131,6 +139,7 @@ public class SetMealController {
      * @param setMeal
      * @return
      */
+    @Cacheable(value = "setMealCache", key = "#setMeal.getCategoryId() + '_' + #setMeal.status", unless = "#result == null ")
     @GetMapping("/list")
     public R<List<SetMeal>> list(SetMeal setMeal){
         LambdaQueryWrapper<SetMeal> queryWrapper = new LambdaQueryWrapper<>();

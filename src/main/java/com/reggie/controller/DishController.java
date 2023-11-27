@@ -13,6 +13,10 @@ import com.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +42,8 @@ public class DishController {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+
 
     /**
      * 新增菜品
@@ -136,6 +142,7 @@ public class DishController {
 //        List<Dish> list = dishService.list(queryWrapper);
 //        return R.success(list);
 //    }
+
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish) {
         List<DishDto> collect = null;
