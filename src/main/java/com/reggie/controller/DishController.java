@@ -20,6 +20,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -42,8 +43,6 @@ public class DishController {
 
     @Autowired
     private RedisTemplate redisTemplate;
-
-
 
     /**
      * 新增菜品

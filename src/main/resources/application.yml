@@ -1,6 +1,40 @@
 server:
   port: 8080
 spring:
+  main:
+    #允许bean定义覆盖配置项
+    allow-bean-definition-overriding: true
+  shardingsphere:
+    datasource:
+      names:
+        master, slave
+      #主数据源
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://8.130.125.153:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: 12345
+       #从数据源
+      slave:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://123.56.245.1:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: 12345
+    masterslave:
+        #读写分离配置
+        load-balance-algorithm-type: round_robin #轮询
+        #最终的数据源名称(bean的名字)
+        name: dataSource
+        #主库数据源名称
+        master-data-source-name: master
+        #从库数据源名称列表,多个逗号分割
+        slave-data-source-names: slave
+    props:
+        sql:
+          show: true #开启SQL显示,默认false
+
   #设置spring cache的底层缓存产品
   cache:
     redis:
@@ -8,12 +42,6 @@ spring:
   application:
     #指定应用的名称（每个项目启动都是一个应用），不指定就默认
     name: Reggie
-  datasource:
-    druid:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
-      password: 12345
     #redis的配置信息
   redis:
     host: 8.130.125.153
@@ -40,4 +68,4 @@ mybatis-plus:
   #自定义变量
 Reggie:
   #定义图片路径，后期方便维护，CommonController中使用了
-  path: D:\StudyAll\ReviewJava-Reggie\Program\Reggie\src\main\resources\image\
+  path: /usr/local/reggie/photos
