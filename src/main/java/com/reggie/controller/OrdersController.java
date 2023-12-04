@@ -48,8 +48,8 @@ public class OrdersController {
         LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(number != null, Orders::getId, number);
 
-        queryWrapper.gt(!beginTime.isEmpty(), Orders::getOrderTime, beginTime);
-        queryWrapper.lt(!endTime.isEmpty(), Orders::getOrderTime, endTime);
+        queryWrapper.gt(beginTime != null, Orders::getOrderTime, beginTime);
+        queryWrapper.lt(endTime != null, Orders::getOrderTime, endTime);
 
         ordersService.page(ordersPage, queryWrapper);
         return R.success(ordersPage);
