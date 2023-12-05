@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.reggie.common.BaseContext;
 import com.reggie.common.CustomException;
+import com.reggie.dto.OrdersDto;
 import com.reggie.entity.*;
 import com.reggie.mapper.OrdersMapper;
 import com.reggie.service.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> implements OrdersService {
 
@@ -97,5 +101,49 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         orderDetailService.saveBatch(orderDetails);
         //清空购物车数据
         shoppingCartService.remove(queryWrapper);
+    }
+
+    @Override
+    public Page<OrdersDto> setPage(int page, int pageSize) {
+        Long currentId = BaseContext.getCurrentId();
+
+        Page<Orders> pageInfo = new Page<>(page, pageSize);
+
+        Page<OrdersDto> ordersDtoPage = new Page<>();
+
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.orderByDesc(Orders::getOrderTime);
+
+        queryWrapper.eq(Orders::getUserId, currentId);
+
+        super.page(pageInfo, queryWrapper);
+
+        BeanUtils.copyProperties(pageInfo, ordersDtoPage, "records");
+
+        List<Orders> list = pageInfo.getRecords();
+
+        LambdaQueryWrapper<OrderDetail> orderDetailLambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+        List<OrdersDto> collect = list.stream().map((item) -> {
+            log.info("进入到循环了");
+            OrdersDto ordersDto = new OrdersDto();
+            //对象拷贝
+            BeanUtils.copyProperties(item, ordersDto);
+
+            String number = item.getNumber();
+
+            orderDetailLambdaQueryWrapper.eq(OrderDetail::getOrderId, number);
+
+            int count = orderDetailService.count(orderDetailLambdaQueryWrapper);
+
+            ordersDto.setSumNum(count);
+
+            return ordersDto;
+        }).collect(Collectors.toList());
+
+        ordersDtoPage.setRecords(collect);
+
+        return ordersDtoPage;
     }
 }

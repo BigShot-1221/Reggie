@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.reggie.common.BaseContext;
 import com.reggie.common.R;
+import com.reggie.dto.OrdersDto;
 import com.reggie.entity.AddressBook;
 import com.reggie.entity.Orders;
 import com.reggie.service.AddressBookService;
@@ -33,10 +34,20 @@ public class OrdersController {
 
     @PostMapping("/submit")
     public R<String> submit(@RequestBody Orders orders){
+        orders.setOrderTime(LocalDateTime.now());
         ordersService.submit(orders);
         return R.success("下单成功");
     }
 
+    /**
+     * 员工页订单列表查看
+     * @param page
+     * @param pageSize
+     * @param number
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
     @GetMapping("/page")
     public R<Page<Orders>> page(int page
             , int pageSize
@@ -55,4 +66,23 @@ public class OrdersController {
         return R.success(ordersPage);
     }
 
+    /**
+     * 设置订单状态
+     * @param orders
+     * @return
+     */
+    @PutMapping
+    public R<String> setStatute(@RequestBody Orders orders) {
+        ordersService.updateById(orders);
+        return R.success("派送成功");
+    }
+
+
+    @GetMapping("/userPage")
+    public R<Page<OrdersDto>> userPage(int page, int pageSize) {
+
+        Page<OrdersDto> ordersDtoPage = ordersService.setPage(page, pageSize);
+
+        return R.success(ordersDtoPage);
+    }
 }
